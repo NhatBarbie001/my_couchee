@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+    stages {
+        stage('Init') {
+            steps {
+                echo 'Testing..'
+                telegramSend(message: 'Building Job - Clickee - Dev - API...', chatId: -4220317008)
+            }
+        }
+        stage ('Deployments') {
+            steps {
+                echo 'Deploying to Production environment...'
+                echo 'Copy project over SSH...'
+                sshPublisher(publishers: [
+                    sshPublisherDesc(
+                        configName: 'thinklabs20',
+                        transfers:
+                            [sshTransfer(
+                                cleanRemote: false,
+                                excludes: '',
+                                execCommand: "docker build -t clickeedevapi ./thinklabsdev/clickeedevapiCI/ \
+                                    && docker service rm clickeedev_api || true \
+                                    && docker stack deploy -c ./thinklabsdev/clickeedevapiCI/docker-compose-dev.yml clickeedev \
+                                    && rm -rf ./thinklabsdev/clickeedevapiCIB \
+                                    && mv ./thinklabsdev/clickeedevapiCI/ ./thinklabsdev/clickeedevapiCIB",
+                                execTimeout: 1200000,
+                                flatten: false,
+                                makeEmptyDirs: false,
+                                noDefaultExcludes: false,
+                                patternSeparator: '[, ]+',
+                                remoteDirectory: './thinklabsdev/clickeedevapiCI',
+                                remoteDirectorySDF: false,
+                                removePrefix: '',
+                                sourceFiles: '* , config/, constants/, data/, files/, helpers/, locales/, mixins/, public/, services/, test/'
+                            )],
+                        usePromotionTimestamp: false,
+                        useWorkspaceInPromotion: false,
+                        verbose: false
+                    )
+                ])
+                telegramSend(message: 'Build Job - Clickee - Dev - API - STATUS: $BUILD_STATUS!', chatId: -4220317008)
+            }
+        }
+    }
+}

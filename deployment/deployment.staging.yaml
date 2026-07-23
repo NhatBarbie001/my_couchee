@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${CURRENT_SERVICE}
+  namespace: ${NAMESPACE}
+  labels:
+    app: ${CURRENT_SERVICE}
+spec:
+  selector:
+    matchLabels:
+      app: ${CURRENT_SERVICE}
+      tier: ${SERVICE_TYPE}
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: ${CURRENT_SERVICE}
+        tier: ${SERVICE_TYPE}
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: ${CURRENT_SERVICE}
+          image: ghcr.io/${CODENAME}/${NAMESPACE}/${CURRENT_SERVICE}:${TAG}
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: ${CURRENT_SERVICE}
+          ports:
+            - containerPort: 3000
+            - containerPort: 3001
+          resources:
+            requests:
+              cpu: 50m
+              memory: 512Mi
+            limits:
+              cpu: 5000m
+              memory: 2Gi
+          volumeMounts:
+            - name: file-storage
+              mountPath: /app/services/File/storage
+      volumes:
+        - name: file-storage
+          persistentVolumeClaim:
+            claimName: file-storage-pvc

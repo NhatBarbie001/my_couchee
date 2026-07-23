@@ -1,0 +1,80 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-services
+  namespace: coach-production
+  annotations:
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/send-timeout: "600"
+spec:
+  ingressClassName: nginx
+  # tls:
+  #   - hosts:
+  #       - api.coach.clickee.vn
+  #     secretName: api-coach-production-tls
+  rules:
+    - host: api.coach.clickee.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: clickee-coach-backend
+                port:
+                  number: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ws-services
+  namespace: coach-production
+  annotations:
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/send-timeout: "600"
+spec:
+  ingressClassName: nginx
+  # tls:
+  #   - hosts:
+  #       - ws.coach.clickee.vn
+  #     secretName: ws-coach-production-tls
+  rules:
+    - host: ws.coach.clickee.vn
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: clickee-coach-backend
+                port:
+                  number: 3001
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: clickee-coach-backend
+  namespace: coach-production
+  labels:
+    app: clickee-coach-backend
+spec:
+  ports:
+    - port: 3000
+      targetPort: 3000
+      name: api
+    - port: 3001
+      targetPort: 3001
+      name: ws
+  type: ClusterIP
+  selector:
+    app: clickee-coach-backend

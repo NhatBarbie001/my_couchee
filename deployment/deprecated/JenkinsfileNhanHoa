@@ -1,0 +1,45 @@
+pipeline {
+    agent any
+    stages {
+        stage('Init') {
+            steps {
+                echo 'Testing..'
+                telegramSend(message: 'Building Job - Clickee - Nhan Hoa - API...', chatId: -4220317008)
+            }
+        }
+        stage ('Deployments') {
+            steps {
+                echo 'Deploying to Production environment...'
+                echo 'Copy project over SSH...'
+                sshPublisher(publishers: [
+                    sshPublisherDesc(
+                        configName: 'nhanhoa232',
+                        transfers:
+                            [sshTransfer(
+                                cleanRemote: false,
+                                excludes: '',
+                                execCommand: "docker build -t clickeeapi ./thinklabsdev/clickeeCI/ \
+                                    && docker service rm clickee_api || true \
+                                    && docker stack deploy -c ./thinklabsdev/clickeeCI/docker-compose-nhanhoa.yml clickee \
+                                    && rm -rf ./thinklabsdev/clickeeCIB \
+                                    && mv ./thinklabsdev/clickeeCI/ ./thinklabsdev/clickeeCIB",
+                                execTimeout: 7200000,
+                                flatten: false,
+                                makeEmptyDirs: false,
+                                noDefaultExcludes: false,
+                                patternSeparator: '[, ]+',
+                                remoteDirectory: './thinklabsdev/clickeeCI',
+                                remoteDirectorySDF: false,
+                                removePrefix: '',
+                                sourceFiles: '* , config/, constants/, data/, files/, helpers/, locales/, mixins/, public/, services/, test/'
+                            )],
+                        usePromotionTimestamp: false,
+                        useWorkspaceInPromotion: false,
+                        verbose: false
+                    )
+                ])
+                telegramSend(message: 'Build Job - Clickee - Nhan Hoa - API - STATUS: $BUILD_STATUS!', chatId: -4220317008)
+            }
+        }
+    }
+}

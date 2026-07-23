@@ -1,0 +1,55 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: clickeeapi-staging
+  namespace: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clickeeapi-staging
+  template:
+    metadata:
+      labels:
+        app: clickeeapi-staging
+    spec:
+      volumes:
+        - name: azurefile
+          persistentVolumeClaim:
+            claimName: clickeeapi-pvc-staging
+      containers:
+        - name: clickeeapi-staging
+          image: clickeeregistry.azurecr.io/backend-staging
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+            - containerPort: 3001
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: backend-staging-config  # Load toàn bộ ConfigMap vào container
+          resources:
+            limits:
+              cpu: '2'
+              memory: 4G
+            requests:
+              cpu: '0'
+              memory: '0'
+          volumeMounts:
+            - name: azurefile
+              mountPath: /app/services/File/storage
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        kubernetes.io/os: linux
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600

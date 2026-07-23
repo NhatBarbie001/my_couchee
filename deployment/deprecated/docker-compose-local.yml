@@ -1,0 +1,55 @@
+version: "3.2"
+services:
+  api:
+    image: "clickeedevapi:latest"
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [ node.hostname==k8sbiai1 ]
+        # placement:
+        # constraints: [node.labels.environment==development]
+      restart_policy:
+        condition: any
+    environment:
+      PORT: 3000
+      NODE_ENV: "production"
+      SERVICE_3000_NAME: "clickeedevapi"
+      SERVICE_NAME: "clickeedevapi"
+      SERVICE_TAGS: "clickeedevapi"
+      DOMAIN: 'https://immense-silkworm-awake.ngrok-free.app'
+      CLIENT_ID: '413043088046-qai6ejq602e2ng5gimdku28s2e19gbch.apps.googleusercontent.com'
+      CLIENT_SECRET: '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'
+      REDIRECT_URI: 'https://immense-silkworm-awake.ngrok-free.app/auth/login-google'
+      FORM_CLIENT_ID: '413043088046-n6ikic605fa6ml238c69mi9kaqc88bh6.apps.googleusercontent.com'
+      FORM_CLIENT_SECRET: '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'
+      FORM_REDIRECT_URI: 'https://immense-silkworm-awake.ngrok-free.app/google-form-callback'
+      MONGO_URI: 'mongodb://clickee:ThinklabS202x@103.124.95.232:17017/clickee?connectTimeoutMS=10000&authSource=clickee&authMechanism=SCRAM-SHA-1'
+      OPENAI_API_KEY: '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'
+      VNPAY_TMN: 'CLKETEST'
+      VNPAY_HASH: 'SQV53YQ7G82ASHBAQ7KO1SFZZCYSD39Y'
+      VNPAY_URL: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html'
+      VNPAY_WHITELIST: '113.160.92.202,203.205.17.226,103.220.84.4,113.52.45.78,113.160.92.202,203.205.17.226,103.220.84.4,127.0.0.1,113.52.45.78,116.97.245.130,42.118.107.252,113.20.97.250,203.171.19.146,103.220.87.4,103.220.86.4,103.220.86.10,103.220.87.10'
+    ports:
+      - target: 3000
+        published: 4065
+        mode: host
+      - target: 3001
+        published: 5065
+        mode: host
+    volumes:
+      - uploadsfile:/app/services/File/storage
+    restart: on-failure
+    networks:
+      - shared-network
+
+volumes:
+  uploadsfile:
+    driver: local
+
+#volumes:
+#  uploadsfile:
+#    driver: local
+
+networks:
+  shared-network:
+    name: shared-network

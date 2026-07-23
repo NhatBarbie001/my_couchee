@@ -1,0 +1,34 @@
+version: "3.2"
+services:
+  api:
+    image: "registry.thinklabs.com.vn:5000/engsuitenewapi:latest"
+    deploy:
+      replicas: 1
+      # placement:
+        # constraints: [ node.hostname==thinklabs03 ]
+      placement:
+        constraints: [node.labels.environment==development]
+      restart_policy:
+        condition: any
+    environment:
+      PORT: 3000
+      NODE_ENV: "production"
+      SERVICE_3000_NAME: "engsuitenewapi"
+      SERVICE_NAME: "engsuitenewapi"
+      SERVICE_TAGS: "engsuitenewapi"
+      DOMAIN: 'https://clickee.ai'
+      MONGO_URI: 'mongodb://clickee:Thinklabs2024@113.160.181.249:4014/clickee?authSource=clickee&authMechanism=SCRAM-SHA-256'
+      OPENAI_API_KEY: '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'
+    ports:
+      - target: 3000
+        published: 4061
+        mode: host
+    volumes:
+      - uploadsfile:/app/services/File/storage
+
+volumes:
+  uploadsfile:
+    driver: lizardfs
+#volumes:
+#  uploadsfile:
+#    driver: local

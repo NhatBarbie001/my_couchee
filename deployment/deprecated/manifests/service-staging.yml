@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: clickeeapi-staging-service
+  namespace: backend
+spec:
+  ports:
+    - name: port3000
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+    - name: port3001
+      protocol: TCP
+      port: 3001
+      targetPort: 3001
+  selector:
+    app: clickeeapi-staging
+  type: ClusterIP

@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+    stages {
+        stage('Init') {
+            steps {
+                echo 'Testing..'
+                telegramSend(message: 'Building Job - Eng Suite Official - API...', chatId: -740504133)
+            }
+        }
+        stage ('Deployments') {
+            steps {
+                echo 'Deploying to Production environment...'
+                echo 'Copy project over SSH...'
+                sshPublisher(publishers: [
+                    sshPublisherDesc(
+                        configName: 'swarm1',
+                        transfers:
+                            [sshTransfer(
+                                cleanRemote: false,
+                                excludes: '',
+                                execCommand: "docker build -t registry.thinklabs.com.vn:5000/engsuitenewapi ./thinklabsdev/engsuitenewapiCI/ \
+                                    && docker image push registry.thinklabs.com.vn:5000/engsuitenewapi \
+                                    && docker service rm engsuitenew_api || true \
+                                    && docker stack deploy -c ./thinklabsdev/engsuitenewapiCI/docker-compose.yml engsuitenew \
+                                    && rm -rf ./thinklabsdev/engsuitenewapiCIB \
+                                    && mv ./thinklabsdev/engsuitenewapiCI/ ./thinklabsdev/engsuitenewapiCIB",
+                                execTimeout: 1200000,
+                                flatten: false,
+                                makeEmptyDirs: false,
+                                noDefaultExcludes: false,
+                                patternSeparator: '[, ]+',
+                                remoteDirectory: './thinklabsdev/engsuitenewapiCI',
+                                remoteDirectorySDF: false,
+                                removePrefix: '',
+                                sourceFiles: '* , config/, constants/, data/, files/, helpers/, locales/, mixins/, public/, services/, test/'
+                            )],
+                        usePromotionTimestamp: false,
+                        useWorkspaceInPromotion: false,
+                        verbose: false
+                    )
+                ])
+                telegramSend(message: 'Build Job - Eng Suite Official - API - STATUS: $BUILD_STATUS!', chatId: -740504133)
+            }
+        }
+    }
+}

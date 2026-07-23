@@ -1,0 +1,1659 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
+	<title>Lingo Tutor Suite</title>
+	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+	<link href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="shortcut icon" type="image/png" href="https://moleculer.services/icon/favicon-16x16.png"/>
+	<script src="https://unpkg.com/vue@3.2.34/dist/vue.global.js"></script>
+	<link rel="stylesheet" href="./main.css">
+	<style>
+		html {
+			font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+			font-size: 18px;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+		}
+
+		body {
+			padding: 0;
+			margin: 0;
+			color: black;
+			text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+			padding-bottom: 60px; /* footer */
+		}
+
+		.cursor-pointer {
+			cursor: pointer;
+			user-select: none;
+		}
+
+		header, footer {
+			text-align: center;
+			color: white;
+			text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+		}
+
+		header a, header a.router-link-exact-active,
+		footer a, footer a.router-link-exact-active
+		{
+			color: #63dcfd;
+		}
+
+		header {
+			background-image: linear-gradient(45deg, #e37682 0%, #5f4d93 100%);
+			padding: 1em;
+			box-shadow: 0 3px 10px rgba(0,0,0,0.6);
+			margin-bottom: 1em;
+		}
+
+		footer {
+			background-image: linear-gradient(135deg, #e37682 0%, #5f4d93 100%);
+			padding: 0.75em;
+			font-size: 0.8em;
+			box-shadow: 0 -3px 10px rgba(0,0,0,0.6);
+			position: fixed;
+			left: 0; right: 0; bottom: 0;
+			margin-top: 1em;
+		}
+
+		.m-r-xs{
+			margin-right: 0.5em;
+		}
+
+		.m-l-xs{
+			margin-left: 0.5em;
+		}
+
+		.m-t-xs{
+			margin-top: 0.5em;
+		}
+
+		.m-b-xs{
+			margin-bottom: 0.5em;
+		}
+
+		.m-x-xs{
+			margin-left: 0.5em;
+			margin-right: 0.5em;
+		}
+
+		.m-y-xs{
+			margin-top: 0.5em;
+			margin-bottom: 0.5em;
+		}
+
+		.m-t-sm{
+			margin-top: 1em;
+		}
+
+		.m-b-sm{
+			margin-bottom: 1em;
+		}
+
+		.m-x-sm{
+			margin-left: 1em;
+			margin-right: 1em;
+		}
+
+		.m-y-sm{
+			margin-top: 1em;
+			margin-bottom: 1em;
+		}
+
+		.m-t-md{
+			margin-top: 2em;
+		}
+
+		.m-b-md{
+			margin-bottom: 2em;
+		}
+
+		.m-x-md{
+			margin-left: 2em;
+			margin-right: 2em;
+		}
+
+		.m-y-md{
+			margin-top: 2em;
+			margin-bottom: 2em;
+		}
+
+		.m-t-lg{
+			margin-top: 3em;
+		}
+
+		.m-b-lg{
+			margin-bottom: 3em;
+		}
+
+		.m-x-lg{
+			margin-left: 3em;
+			margin-right: 3em;
+		}
+
+		.m-y-lg{
+			margin-top: 3em;
+			margin-bottom: 3em;
+		}
+
+		.m-t-xl{
+			margin-top: 4em;
+		}
+
+
+		footer .footer-links {
+			margin-top: 0.5em;
+		}
+
+		footer .footer-links a {
+			margin: 0 0.5em;
+		}
+
+		a, a.router-link-exact-active {
+			color: #3CAFCE;
+			text-decoration: none;
+		}
+
+		nav ul {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		nav ul li {
+			display: inline-block;
+			padding: 0.25em 0.75em;
+			cursor: pointer;
+			font-weight: 300;
+			font-size: 1.25em;
+			border-bottom: 2px solid transparent;
+			transition: color .1s linear, border-bottom .1s linear;
+		}
+
+		nav ul li.active {
+			border-bottom: 2px solid #63dcfd;
+		}
+
+		nav ul li:hover {
+			color: #63dcfd;
+		}
+
+		button, .button {
+			background-color: #3CAFCE;
+			border: 0;
+			border-radius: 8px;
+			color: white;
+			font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+			font-size: 16px;
+			font-weight: 400;
+			padding: 0.5em 1em;
+			box-shadow: 0 4px 6px -1px rgba(0,0,0,.2);
+			cursor: pointer;
+			user-select: none;
+			min-width: 100px;
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			align-items: center;
+			justify-content: center;
+		}
+
+		button i, .button i {
+			margin-right: 0.5em;
+		}
+
+		button:hover, .button:hover {
+			filter: brightness(120%);
+		}
+
+		.button.outlined{
+			background-color: transparent;
+			border: 1px solid #3CAFCE;
+			color: #3CAFCE;
+		}
+
+		.button.flat{
+			background-color: transparent;
+			border: unset;
+			color: #3CAFCE;
+			box-shadow: unset;
+		}
+
+		.button.flat:hover{
+			box-shadow: 0 4px 6px -1px rgba(0,0,0,.2);
+			transition: .1s ease-in-out;
+		}
+
+
+		.button.flat.negative{
+			background-color: transparent;
+			border: unset;
+			color: #b2184e;
+		}
+		.button.flat.positive{
+			background-color: transparent;
+			border: unset;
+			color: #28a728;
+		}
+		.button.flat.info{
+			background-color: transparent;
+			border: unset;
+			color: #285fa7;
+		}
+		.button.flat.warning{
+			background-color: transparent;
+			border: unset;
+			color: #b2ad18;
+		}
+
+		.button.outlined.negative{
+			background-color: transparent;
+			border: 1px solid #b2184e;
+			color: #b2184e;
+		}
+		.button.outlined.positive{
+			background-color: transparent;
+			border: 1px solid #28a728;
+			color: #28a728;
+		}
+		.button.outlined.info{
+			background-color: transparent;
+			border: 1px solid #285fa7;
+			color: #285fa7;
+		}
+		.button.outlined.warning{
+			background-color: transparent;
+			border: 1px solid #b2ad18;
+			color: #b2ad18;
+		}
+
+
+		.button.negative{
+			background-color: #b2184e;
+		}
+		.button.positive{
+			background-color: #28a728;
+		}
+		.button.info{
+			background-color: #285fa7;
+		}
+		.button.warning{
+			background-color: #b2ad18;
+		}
+
+		code {
+			font-family: "Consolas", 'Courier New', Courier, monospace;
+			color: #555;
+		}
+
+		main {
+			max-width: 1260px;
+			margin: 0 auto;
+			padding: 1em 1em;
+		}
+
+		main section#home > .content {
+			text-align: center;
+		}
+
+		main section#home h1 {
+			font-size: 2em;
+			font-weight: 400;
+			margin-top: 0;
+		}
+
+		main section#home h3 {
+			font-size: 1.25em;
+			font-weight: 600;
+		}
+
+
+
+
+		pre.broker-options {
+			display: inline-block;
+			text-align: left;
+			font-size: 0.9em;
+		}
+
+		.boxes {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+		}
+
+		.boxes .box {
+			width: 200px;
+			padding: 0.25em 1em;
+			margin: 0.5em;
+			background: rgba(60, 175, 206, 0.1);
+
+			border: 1px solid grey;
+			border-radius: 0.25em;
+		}
+
+		.boxes .box .caption {
+			font-weight: 300;
+			font-size: 0.9em;
+			margin-bottom: 0.5em;
+		}
+
+		.boxes .box .value {
+			font-weight: 600;
+			font-size: 1.1em;
+		}
+
+		main input {
+			border: 1px solid #3CAFCE;
+			border-radius: 4px;
+			padding: 2px 6px;
+			font-family: "Source Sans Pro";
+		}
+
+		main fieldset {
+			border: 1px solid lightgrey;
+			border-radius: 8px;
+			box-shadow: 2px 2px 10px rgba(0,0,0,0.4);
+			background-color: rgba(240, 244, 247, 0.802);
+			margin-bottom: 2em;
+		}
+
+		main fieldset legend {
+			background-color: #cce7ff;
+			border: 1px solid lightgrey;
+			padding: 4px 10px;
+			border-radius: 8px;
+		}
+
+		main fieldset .content {
+			display: flex;
+			flex-direction: column;
+			flex:1;
+		}
+
+		main fieldset .action-card {
+
+		}
+
+		.action-card {
+			display: flex;
+			flex: 1;
+			flex-direction: column;
+			margin-bottom: .2em;
+			margin-top: .2em;
+			border: 1px solid lightgrey;
+			border-radius: 4px;
+
+		}
+
+		.action-card.expand {
+
+		}
+
+		.action-card-header{
+			padding: 8px;
+			border-bottom: 1px solid lightgrey;
+			border-radius: 4px;
+			display: flex;
+			flex:1;
+			flex-direction: row;
+			align-items: center;
+			transition: .25s ease-in-out all;
+		}
+
+		.action-card-header:hover{
+			filter: brightness(1.2);
+			cursor: pointer;
+		}
+
+		.action-card-header.expand{
+
+		}
+
+
+
+		.action-card-section{
+			display: none;
+		}
+
+		.action-card-section.expand{
+			display: block;
+			transition: .300s ease-in-out display;
+		}
+
+		.flex-spacer{
+			flex-grow: 1;
+		}
+
+
+		.action-card-section-parameters{
+
+
+		}
+		.action-card-section-parameters-header{
+			background-color: #fbfbfbbb;
+			padding: 8px;
+			display: flex;justify-items: center;align-items: center;flex-direction: row;	flex: 1;
+
+		}
+		.action-card-section-parameters-body{
+			padding: 8px;
+
+		}
+
+		.action-card-section-response{
+			background-color: #fbfbfb92;
+		}
+
+		.action-card-section-response-header{
+			background-color: #fbfbfbbb;
+			padding: 8px;
+			display: flex;justify-items: center;align-items: center;flex-direction: row;	flex: 1;
+		}
+
+		.action-card-section-response-body{
+			padding: 4px 16px;
+		}
+
+		main fieldset .parameters .field {
+			margin-bottom: 0.25em;
+		}
+
+		main fieldset .parameters .field label {
+			min-width: 80px;
+			display: inline-block;
+			text-align: right;
+			margin-right: 0.5em;
+		}
+
+		main fieldset .response {
+			margin-top: 1em;
+		}
+
+		main fieldset .response pre {
+			margin: 0.5em 0;
+			font-size: 0.9em;
+		}
+
+		pre.json .string { color: #885800; }
+		pre.json .number { color: blue; }
+		pre.json .boolean { color: magenta; }
+		pre.json .null { color: red; }
+		pre.json .key { color: green; }
+
+
+
+		main h4 {
+			font-weight: 600;
+			margin: 0.25em -1.0em;
+		}
+
+		.badge {
+			display: inline-block;
+			background-color: dimgray;
+			color: white;
+			padding: 2px 6px;
+			border-radius: 4px;
+			font-size: 0.7em;
+			font-weight: 600;
+		}
+
+		.badge.lg {
+			padding: 4px 8px;
+		}
+
+		.badge.lg.fixed {
+			width: 80px;
+		}
+
+		.badge.green {
+			background-color: limegreen;
+		}
+
+		.badge.red {
+			background-color: firebrick;
+		}
+
+		.badge.orange {
+			background-color: #fab000;
+			color: black;
+		}
+
+		.badge.light {
+			background-color: #669aa9a6;
+		}
+
+		table {
+			width: 100%;
+			/*max-width: 1000px;*/
+			border: 1px solid lightgrey;
+			border-radius: 8px;
+			background-color: aliceblue;
+		}
+
+		table th {
+			padding: 2px 4px;
+			background-color: #cce7ff;
+			border-radius: 4px;
+		}
+
+		table tr.offline td {
+			font-style: italic;
+			color: #777;
+		}
+
+		table tr.local td {
+			/*color: blue;*/
+		}
+
+		table tr:not(:last-child) td {
+			border-bottom: 1px solid #ddd;
+		}
+
+		table td {
+			text-align: center;
+			position: relative;
+			padding: 2px 4px;
+		}
+
+		table th:nth-child(1), table td:nth-child(1) {
+			text-align: left
+		}
+
+		table tr.service td:nth-child(1) {
+			font-weight: bold;
+		}
+
+		table tr.action td:nth-child(1) {
+			padding-left: 2em;
+		}
+
+		table tr td:nth-child(2) {
+			font-family: monospace;
+			font-size: 0.8em;
+		}
+
+		.bar {
+			position: absolute;
+			left: 0; right: 0; top: 0; bottom: 0;
+			width: 0;
+			height: 100%;
+			background-color: rgba(0,0,0,0.3);
+		}
+
+		input[type=text], input[type=password], input[type=number], input[type=email], input[type=url], input[type=tel], input[type=date], input[type=month], input[type=week], input[type=time], input[type=datetime], input[type=datetime-local], input[type=color], textarea, select {
+			background-color: #f0f0f0;
+			border: 1px solid rgba(42, 51, 150, 0.806);
+			border-radius: 4px;
+			padding: 2px 8px;
+			height: 1.5em;
+		}
+
+		input[type=checkbox] {
+			margin-right: 0.5em;
+			height: 1.25em;
+			width: 1.25em;
+		}
+
+		input[type=radio] {
+			margin-right: 0.5em;
+			height: 1.25em;
+			width: 1.25em;
+		}
+
+		input[required]:invalid {
+			background-color: #d0c0c0d0;
+			border: 1px solid rgb(161, 54, 54);
+			border-radius: 4px;
+			padding: 4px;
+
+		}
+
+		input[required]:after{
+			content: "*";
+			color: red;
+			font-size: 0.8em;
+			position: absolute;
+			right: 0.5em;
+			top: 0.5em;
+		}
+
+		.bg-primary {
+			background-color: #3CAFCE;
+		}
+
+		.bg-secondary {
+			background-color: #999;
+		}
+
+		.bg-method-post {
+			background-color: #1e8847;
+		}
+
+		.bg-method-get {
+			background-color: #1f697e;
+		}
+
+		.bg-method-put {
+			background-color: #b79f27;
+		}
+
+		.bg-method-patch {
+			background-color: #916d18;
+		}
+
+		.bg-method-delete {
+			background-color: #b72727;
+		}
+
+		.bg-method-options {
+			background-color: #80449a;
+		}
+
+		.action-method-post {
+			background-color: #1e884740;
+			border: 1px solid #1e8847;
+		}
+
+		.action-method-get {
+			background-color: #1f697e44;
+			border: 1px solid #1f697e;
+		}
+
+		.action-method-put {
+			background-color: #b79f2740;
+			border: 1px solid #b79f27;
+		}
+
+		.action-method-patch {
+			background-color: #916d183e;
+			border: 1px solid #916d18;
+		}
+
+		.action-method-delete {
+			background-color: #b727273d;
+			border: 1px solid #b72727;
+		}
+
+		.action-method-options {
+			background-color: #80449a61;
+			border: 1px solid #80449a;
+		}
+
+
+		.text-title {
+			font-size: 1.25em;
+			font-weight: 400;
+		}
+		.text-subtitle1 {
+			font-size: 1.25em;
+			font-weight: 200;
+		}
+
+		.text-subtitle2 {
+			font-size: 1.15em;
+			font-weight: 200;
+		}
+
+		.text-h1 {
+			font-size: 2em;
+			font-weight: 400;
+		}
+
+		.text-h2 {
+			font-size: 1.5em;
+			font-weight: 400;
+		}
+
+		.text-h3 {
+			font-size: 1.25em;
+			font-weight: 300;
+		}
+
+		.text-h4 {
+			font-size: 1.15em;
+			font-weight: 300;
+		}
+
+		.text-h5 {
+			font-size: 1em;
+			font-weight: 200;
+		}
+
+		.text-h6 {
+			font-size: 0.85em;
+			font-weight: 200;
+		}
+
+		.text-caption {
+			font-size: 0.85em;
+			font-weight: 200;
+		}
+
+		.text-code {
+			font-size: 1em;
+			font-weight: 300;
+		}
+
+		.text-bold {
+			font-weight: bold;
+		}
+
+		.text-p {
+			font-size: 1em;
+			font-weight: 400;
+		}
+
+		.text-small {
+			font-size: 0.85em;
+			font-weight: 400;
+		}
+
+		.text-muted {
+			font-size: 0.85em;
+			font-weight: 400;
+			color: #999;
+		}
+
+		.text-primary {
+			color: #3CAFCE;
+		}
+
+		.text-secondary {
+			color: #999;
+		}
+
+
+		.text-center {
+			text-align: center;
+		}
+
+		.text-right {
+			text-align: right;
+		}
+
+		.text-left {
+			text-align: left;
+		}
+
+		.text-justify {
+			text-align: justify;
+		}
+
+		.text-nowrap {
+			white-space: nowrap;
+		}
+
+		.text-truncate {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.text-break {
+			word-break: break-all;
+		}
+
+		.text-lowercase {
+			text-transform: lowercase;
+		}
+
+		.text-uppercase {
+			text-transform: uppercase;
+		}
+
+		.text-capitalize {
+			text-transform: capitalize;
+		}
+
+		.text-wrap {
+			word-wrap: break-word;
+		}
+
+		.text-nowrap {
+			white-space: nowrap;
+		}
+
+		.full-width{
+			width: 100%;
+		}
+		.flex,.row,.column{
+			display: flex;
+		}
+		.column{
+			flex-direction: column;
+		}
+		.row{
+			flex-direction: row;
+		}
+
+		.self-start{
+			align-self: flex-start;
+		}
+		.self-center{
+			align-self: center;
+		}
+		.self-end{
+			align-self: flex-end;
+		}
+
+		.justify-start{
+			justify-content: flex-start;
+		}
+		.justify-center{
+			justify-content: center;
+		}
+		.justify-end{
+			justify-content: flex-end;
+		}
+		.justify-between{
+			justify-content: space-between;
+		}
+		.justify-around{
+			justify-content: space-around;
+		}
+
+		.items-start{
+			align-items: flex-start;
+		}
+		.items-center{
+			align-items: center;
+		}
+		.items-end{
+			align-items: flex-end;
+		}
+		.items-baseline{
+			align-items: baseline;
+		}
+		.items-stretch{
+			align-items: stretch;
+		}
+
+		.flex-grow{
+			flex-grow: 1;
+		}
+
+		.flex-wrap{
+			flex-wrap: wrap;
+		}
+		.nowrap{
+			flex-wrap: nowrap;
+		}
+
+		.modal-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+			z-index: 999;
+		}
+
+		.modal{
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: 80%;
+			max-width: 500px;
+			background-color: #fff;
+			border-radius: 4px;
+			box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+			z-index: 1000;
+
+		}
+
+		.modal .modal-header{
+			border-bottom: 1px solid #e5e5e5;
+			padding: 8px;
+		}
+		.modal .modal-content{
+			height: 100%;
+			padding: 16px;
+
+		}
+		.modal .modal-actions{
+			border-top: 1px solid #e5e5e5;
+			display: flex;
+			justify-content: flex-end;
+			padding: 16px;
+			flex-direction: row;
+			flex-wrap: nowrap;
+
+		}
+		.form-group {
+
+		}
+		.form-group > * {
+			margin-right: 4px;
+			margin-bottom: 4px;
+		}
+
+		input[type=text].input-size-md{
+			height: 1.5em;
+			font-size: 1.3em;
+		}
+
+		.field>label {
+			width: 120px;
+		}
+	</style>
+</head>
+<body>
+	<div id="app">
+		<header>
+			<a href="https://moleculer.services/docs/0.14/" target="_blank">
+				<img class="logo" src="https://moleculer.services/images/logo/logo_with_text_horizontal_100h_shadow.png" /></a>
+			<nav>
+				<ul>
+					<li v-for="item in menu" :class="{ active: page == item.id}" @click="changePage(item.id)">{{ item.caption }}</li>
+				</ul>
+			</nav>
+		</header>
+
+		<main>
+			<section id="home" v-if="page == 'home'">
+				<div class="content">
+					<h1>Welcome to your Moleculer microservices project!</h1>
+					<p>Check out the <a href="https://moleculer.services/docs/0.14/" target="_blank">Moleculer documentation</a> to learn how to customize this project.</p>
+
+					<template v-if="broker">
+						<h3>Configuration</h3>
+						<div class="boxes">
+							<div class="box">
+								<div class="caption">Namespace</div>
+								<div class="value">{{ broker.namespace || "&lt;not set&gt;" }}</div>
+							</div>
+
+							<div class="box">
+								<div class="caption">Transporter</div>
+								<div class="value">{{ broker.transporter || "&lt;no transporter&gt;" }}</div>
+							</div>
+
+							<div class="box">
+								<div class="caption">Serializer</div>
+								<div class="value">{{ broker.serializer || "JSON" }}</div>
+							</div>
+
+							<div class="box">
+								<div class="caption">Strategy</div>
+								<div class="value">{{ broker.registry.strategy || "Round Robin" }}</div>
+							</div>
+
+							<div class="box">
+								<div class="caption">Cacher</div>
+								<div class="value">{{ broker.cacher ? "Enabled" : "Disabled" }}</div>
+							</div>
+
+							<div class="box">
+								<div class="caption">Logger</div>
+								<div class="value">{{ broker.logger ? "Enabled" : "Disabled" }}</div>
+							</div>
+
+							<div class="box">
+								<div class="caption">Metrics</div>
+								<div class="value">{{ broker.metrics.enabled ? "Enabled" : "Disabled" }}</div>
+							</div>
+
+							<div class="box">
+								<div class="caption">Tracing</div>
+								<div class="value">{{ broker.tracing.enabled ? "Enabled" : "Disabled" }}</div>
+							</div>
+						</div>
+
+						<h3 class="cursor-pointer" @click="showBrokerOptions = !showBrokerOptions">Broker options <i :class="'fa fa-angle-' + (showBrokerOptions ? 'up' : 'down')"></i></h3>
+						<pre v-if="showBrokerOptions" class="broker-options"><code>{{ broker }}</code></pre>
+					</template>
+				</div>
+			</section>
+			<section id="apis" v-if="page == 'apis'">
+				<div class="flex row no-wrap m-y-sm ">
+					<input type="text" class="input-size-md flex-grow" placeholder="Search in actions, methods, paths..." v-model="apiSearchText" />
+					<button class="m-x-xs button outlined positive" @click="refreshApiPage">
+						<i class="fa fa-refresh"></i>
+						Refresh
+					</button>
+					<button :class="`button  ${globalAuth?.token ? 'positive' : 'outlined negative'}`" @click="showAuthorizeDialog">
+						<i :class="`fa fa-${globalAuth?.token ? 'lock' : 'unlock'}`"></i>
+						Authorize
+					</button>
+				</div>
+				<hr/>
+			<template v-for="(section, name) in filteredApis" :key="name">
+				<section v-if="section && section.length>0" :id="name">
+					<fieldset>
+						<legend>
+							{{ getService(name).fullName }}<span v-if="getService(name).version" class="badge light  m-x-xs">{{ getService(name).version }}</span>
+						</legend>
+						<div class="content">
+							<div :class="`action-card action-method-${item.rest.method.toLocaleLowerCase()} `" v-for="item,ix in section" :key="ix" >
+								<div class="action-card-header" @click="item.expand=!item.expand">
+									<span :class="`badge lg fixed text-center text-code bg-method-${item.rest.method.toLocaleLowerCase()} `"> {{ item.rest.method }}</span>
+									<span class="text-subtitle2 m-x-xs">{{ item.rest.path }}</span>
+									<div class="flex-spacer"></div>
+									<span class="text-caption m-x-xs">{{ item.action }}</span>
+									<span class="badge m-x-xs">{{ item.fields.length }}</span>
+								</div>
+								<form @submit.prevent.stop="callAction(item,name)">
+									<div :class="{'action-card-section':true,expand:item.expand}">
+										<div class="action-card-section-parameters">
+											<div class="action-card-section-parameters-header">
+
+												<div class="text-p">Parameters</div>
+												<div class="flex-spacer"></div>
+												<div class="">
+													<button :disabled="item.loading" class="button" type="submit">
+														<i :class="`fa fa-${item.loading ? 'spinner':'rocket'}`"></i>
+														{{item.loading ? 'Trying...' : 'Try'}}
+													</button>
+												</div>
+										</div>
+										<div class="action-card-section-parameters-body">
+											<div v-if="item.fields" class="parameters">
+												<div :class="{field:true,required:field.optional===false}" v-for="field,ix in item.fields" :key="field.name">
+													<label :for="field.name+'--'+ix">{{ field.label }}: </label>
+													<input v-if="field.dataType==='number'"  :min="field.min" :max="field.max"  :type="field.type" :id="field.name+'--'+ix" :name="field.name" v-model.number="field.value" :required="field.required === true || field.optional===false"></input>
+													<input v-else :type="field.type"  :maxlength="field.maxLength" :minlength="field.minLength"  :id="field.name+'--'+ix" :name="field.name" v-model="field.value" :required="field.required === true || field.optional===false"></input>
+												</div>
+											</div>
+										</div>
+										</div>
+										<div class="action-card-section-response" v-if="item.status">
+											<div class="action-card-section-response-header">
+												<div class="text-p">Response</div>
+												<span text>
+													<div class="badge m-x-xs" :class="{ green: item.status < 400, red: item.status >= 400 || item.status == 'ERR' }">{{ item.status }}</div>
+													<div class="badge time m-r-xs">{{ humanize(item.duration) }}</div>
+												</span>
+												<div class="flex-spacer"></div>
+												<div>
+													<button v-if="item.response" class="button outlined negative" @click="clearResponse(item)">
+														<i :class="`fa fa-remove`"></i>
+														Clear
+													</button>
+												</div>
+											</div>
+											<div class="action-card-section-response-body">
+												<pre><code>{{ item.response }}</code></pre>
+											</div>
+
+										</div>
+									</div>
+							    </form>
+							</div>
+						</div>
+					</fieldset>
+				</section>
+			</template>
+			</section>
+			<section id="nodes" v-if="page == 'nodes'">
+				<table>
+					<thead>
+						<th>Node ID</th>
+						<th>Type</th>
+						<th>Version</th>
+						<th>IP</th>
+						<th>Hostname</th>
+						<th>Status</th>
+						<th>CPU</th>
+					</thead>
+					<tbody>
+						<tr v-for="node in nodes" :class="{ offline: !node.available, local: node.local }" :key="node.id">
+							<td>{{ node.id }}</td>
+							<td>{{ node.client.type }}</td>
+							<td>{{ node.client.version }}</td>
+							<td>{{ node.ipList[0] }}</td>
+							<td>{{ node.hostname }}</td>
+
+							<td><div class="badge" :class="{ green: node.available, red: !node.available }">{{ node.available ? "Online": "Offline" }}</div></td>
+							<td>
+								<div class="bar" :style="{ width: node.cpu != null ? node.cpu + '%' : '0' }"></div>
+								{{ node.cpu != null ? Number(node.cpu).toFixed(0) + '%' : '-' }}
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</section>
+			<section id="services" v-if="page == 'services'">
+				<table>
+					<thead>
+						<th>Service/Action name</th>
+						<th>REST</th>
+						<th>Parameters</th>
+						<th>Instances</th>
+						<th>Status</th>
+					</thead>
+					<tbody>
+						<template v-for="svc in filteredServices">
+							<tr class="service">
+								<td>
+									{{ svc.name }}
+									<div v-if="svc.version" class="badge">{{ svc.version }}</div>
+								</td>
+								<td>{{ svc.settings.rest ? svc.settings.rest : svc.fullName }}</td>
+								<td></td>
+								<td class="badges">
+									<div class="badge" v-for="nodeID in svc.nodes">
+										{{ nodeID }}
+									</div>
+								</td>
+								<td>
+									<div v-if="svc.nodes.length > 0" class="badge green">Online</div>
+									<div v-else class="badge red">Offline</div>
+								</td>
+							</tr>
+							<tr v-for="action in getServiceActions(svc)" :class="{ action: true, offline: !action.available, local: action.hasLocal }">
+								<td>
+									{{ action.name }}
+									<div v-if="action.action.cache" class="badge orange">cached</div>
+								</td>
+								<td v-html="getActionREST(svc, action)"></td>
+								<td :title="getActionParams(action)">
+									{{ getActionParams(action, 40) }}
+								</td>
+								<td></td>
+								<td>
+									<div v-if="action.available" class="badge green">Online</div>
+									<div v-else class="badge red">Offline</div>
+								</td>
+							</tr>
+						</template>
+					</tbody>
+				</table>
+			</section>
+		</main>
+
+		<footer>
+			<div class="footer-copyright">
+				Copyright &copy; 2016-2022 - Moleculer
+			</div>
+			<div class="footer-links">
+				<a href="https://github.com/moleculerjs/moleculer" class="footer-link" target="_blank">Github</a>
+				<a href="https://twitter.com/MoleculerJS" class="footer-link" target="_blank">Twitter</a>
+				<a href="https://discord.gg/TSEcDRP" class="footer-link" target="_blank">Discord</a>
+				<a href="https://stackoverflow.com/questions/tagged/moleculer" class="footer-link" target="_blank">Stack Overflow</a>
+			</div>
+		</footer>
+		<div v-if="openAuthorizeDialog" >
+			<div class="modal-overlay"></div>
+			<div class="modal">
+				<div class="modal-header">
+					<span class="text-title text-bold">Authorization</span>
+					<span class="modal-close" @click="openAuthorizeDialog = false"></span>
+				</div>
+				<div class="modal-content">
+					<fieldset>
+						<legend>Authorize by username and password</legend>
+						<div class="flex column">
+							<div class="form-group">
+								<label>Username</label>
+								<input type="text" v-model="auth.username" class="form-control" placeholder="Username">
+							</div>
+							<div class="form-group">
+								<label>Password</label>
+								<input type="password"  v-model="auth.password" class="form-control" placeholder="Password">
+							</div>
+							<div class="form-group">
+								<label>Tenant</label>
+								<input type="text" v-model="auth.tenant" class="form-control" placeholder="Tenant">
+							</div>
+							<button class="self-end button outlined positive" @click="authorize">Authorize</button>
+						</div>
+					</fieldset>
+
+					<div class="form-group">
+						<label>Token</label>
+						<textarea style="height:100px;width: 100%;" v-model="auth.token" class="form-control" placeholder="Token" ></textarea>
+					</div>
+
+				</div>
+				<div class="modal-actions">
+
+					<button class="button flat" @click="openAuthorizeDialog = false">Cancel</button>
+					<button class="button flat m-x-xs" @click="resetAuthorization">Reset</button>
+					<button class="button" @click="saveAuthorize">Save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		const { createApp } = Vue
+		const app = createApp({
+
+			data() {
+				return {
+					apiSearchText: "",
+					menu: [
+						{ id: "home", caption: "Home" },
+						{ id: "apis", caption: "REST API" },
+						{ id: "nodes", caption: "Nodes" },
+						{ id: "services", caption: "Services" }
+					],
+					page: "home",
+
+					requests: {
+
+					},
+					openAuthorizeDialog: false,
+					auth: {
+						    tenant:"",
+							username: "",
+							password: "",
+							token: ""
+						},
+						globalAuth:{
+							tenant:"",
+							username: "",
+							password: "",
+							token: ""
+						},
+					fields: {
+
+					},
+
+					broker: null,
+					nodes: [],
+					services: [],
+					actions: {},
+
+					showBrokerOptions: false
+				};
+			},
+
+			computed: {
+				filteredServices() {
+					return this.services.filter(svc => !svc.name.startsWith("$"));
+				},
+
+				filteredApis() {
+					const s = this.apiSearchText.toLocaleLowerCase();
+					if (!this.apiSearchText)
+						return this.requests;
+					else {
+						const reqs = {};
+						for (const key in this.requests) {
+							reqs[key] = this.requests[key]
+											.filter(r => r?.action?.toLocaleLowerCase().includes(s) ||
+											 r?.rest?.method?.toLocaleLowerCase().includes(s) ||
+											  r?.rest?.path?.toLocaleLowerCase().includes(s) ||
+											   r?.rest?.url?.toLocaleLowerCase().includes(s));
+						}
+						return reqs;
+					}
+				},
+			},
+
+			methods: {
+				resetAuthorization() {
+					this.auth = {
+						    tenant:"",
+							username: "",
+							password: "",
+							token: ""
+						};
+						this.saveAuthorize();
+				},
+
+				authorize() {
+					fetch("/api/v1/identity/auth/signin",{
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						body: JSON.stringify(this.auth)
+
+					}).then(res => {
+						if (res.status == 401) {
+							this.openAuthorizeDialog = true;
+							alert("Invalid username or password");
+						} else if (res.status == 200) {
+							res.json().then(data => {
+								this.auth.token = res.headers.get("Authorization") || data.token;
+								this.auth.tenant = res.headers.get("x-tenant-id") || data.tenant;
+								// this.saveAuthorize();
+							});
+						}
+						else {
+							alert("Not authorized");
+						}
+					});
+				},
+
+				saveAuthorize() {
+					this.globalAuth = {...this.auth};
+					localStorage.setItem("globalAuth", JSON.stringify(this.globalAuth));
+					this.openAuthorizeDialog = false;
+				},
+
+                refreshApiPage(){
+					return this.updateServiceList();
+				},
+
+				showAuthorizeDialog() {
+					this.openAuthorizeDialog = true;
+				},
+
+				closeAuthorizeDialog(){
+					this.openAuthorizeDialog = false;
+				},
+
+				changePage(page) {
+					this.page = page;
+					localStorage.setItem("lastPage", this.page);
+					if (this.page == 'apis') {
+						return this.updateServiceList();
+					}
+					else {
+						this.updatePageResources();
+					}
+				},
+
+				humanize(ms) {
+					return ms > 1500 ? (ms / 1500).toFixed(2) + " s" : ms + " ms";
+				},
+
+				getServiceActions(svc) {
+					return Object.keys(svc.actions)
+						.map(name => this.actions[name])
+						.filter(action => !!action);
+				},
+
+				getActionParams(action, maxLen) {
+					if (action.action && action.action.params) {
+						const s = Object.keys(action.action.params).join(", ");
+						return s.length > maxLen ? s.substr(0, maxLen) + "…" : s;
+					}
+					return "-";
+				},
+
+				getActionREST(svc, action) {
+					if (action.action.rest) {
+						let prefix = svc.fullName || svc.name;
+						if (typeof(svc.settings.rest) == "string")
+							prefix = svc.settings.rest;
+
+						if (typeof action.action.rest == "string") {
+							if (action.action.rest.indexOf(" ") !== -1) {
+								const p = action.action.rest.split(" ");
+								return "<span class='badge'>" + p[0] + "</span> " + prefix + p[1];
+							} else {
+								return "<span class='badge'>*</span> " + prefix + action.action.rest;
+							}
+						} else {
+							return "<span class='badge'>" + (action.action.rest.method || "*") + "</span> " + prefix + action.action.rest.path;
+						}
+					}
+					return "";
+				},
+
+				getRest(item) {
+					if(!item.rest) return item.rest;
+					if (typeof item.rest === "object") return item.rest; // REST object
+					if (item.rest.indexOf(" ") !== -1) {
+						const p = item.rest.split(" ");
+						return { method: p[0], path: p[1] };
+					} else {
+						return { method: "*", path: item.rest };
+					}
+				},
+
+				getFields(item,method,url) {
+					if(!item.params) return [];
+					const r = [];
+					for (const key in item.params) {
+						if(key.startsWith('$')) continue;
+						if(item.params[key].readonly===true) continue;
+						if(item.params[key].hidden===true) continue;
+						const dataType =  item.params[key].type || item.params[key];
+						const hidden = item.params[key].hidden || false;
+						const required = item.params[key].required || false;
+						const optional = Array.isArray(item.params[key]) ? item.params[key].every(xx=>xx.optional===true) : item.params[key].optional || false;
+						const maxLength = item.params[key].max || undefined;
+						const minLength = item.params[key].min || undefined;
+						const pattern = item.params[key].pattern || undefined;
+						let type = "text";
+						let value =  item.params[key].default || undefined;
+						if (dataType.includes("number")) {type = "number";  };
+						if (dataType === "boolean") {type = "checkbox"; value = value || false;};
+						if (dataType === "string") type = "text";
+						if (dataType === "object") type = "textarea";
+						if (dataType === "array") type = "textarea";
+						if (dataType === "file") type = "file";
+						if (dataType === "date") type = "date";
+						if (dataType === "datetime") type = "datetime";
+						if (dataType === "time") type = "time";
+						if (dataType === "password") type = "password";
+						if (dataType === "enum") type = "select";
+						if (dataType === "enum-multi") type = "select-multi";
+
+						r.push({ name: key,
+							  label: key,optional,
+							  hidden,required,
+							  [type==='number'?'min':'minLength'] :minLength,
+							  [type==='number'?'max':'maxLength'] :maxLength,
+							  pattern,
+							  paramType: method==='GET' ? 'param' : 'body',
+							  value,
+							  type,dataType, value:undefined });
+					}
+					return r;
+				},
+
+				getService(fullName){
+					const svc = this.services.find(svc => svc.fullName == fullName);
+					return svc || {};
+				},
+
+				clearResponse(item){
+					item.response = undefined;
+					item.duration = undefined;
+					item.loading = false;
+					item.status = undefined;
+				},
+
+				callAction: function (item,fullName) {
+					if(!item.rest) return;
+					item.loading = true;
+					const service = this.services.find(svc => svc.name == fullName);
+					var startTime = Date.now();
+
+					const method = item.rest.method || "GET";
+					let url = item.rest.url;
+					let fields = item.fields;
+					let body = null;
+					let params = null;
+					if (fields) {
+						body = {};
+						params = {};
+						fields.forEach(field => {
+							const value = field.value;
+							if (field.paramType == "body"){
+								body[field.name] = value;
+								if(value===undefined && field.optional===true){
+									delete body[field.name];
+								}
+							}
+							else if (field.paramType == "param"){
+
+								params[field.name] = value;
+								if(value===undefined && field.optional===true){
+									delete params[field.name];
+								}
+							}
+
+							else if (field.paramType == "url"){
+								if(value===undefined && field.optional===true){
+									url = url.replace(`:${field.name}`,'');
+								}
+								else{
+									url = url.replace(`:${field.name}`,value);
+								}
+							}
+							url = url.replace(`:${field.name}`,value);
+						});
+
+						if (body && method == "GET") {
+							body = null;
+						}
+						if (params && Object.keys(params).length > 0) {
+							const qparams = {};
+							for (const key in params) {
+								if(params[key]!==undefined){
+									qparams[key] = params[key];
+								}
+							}
+							url += "?" + new URLSearchParams(qparams).toString();
+						}
+
+					}
+					const authtoken = this.globalAuth.token;
+					const tenant = this.globalAuth.tenant;
+					const authHeader = {};
+					if(authtoken){
+						authHeader['Authorization'] = `Bearer ${authtoken}`;
+					}
+					if(tenant){
+						authHeader["x-tenant"] = tenant;
+					}
+					return fetch(url, {
+						method,
+						body: body ? JSON.stringify(body) : null,
+					    headers: {
+							'Content-Type': 'application/json',
+							...authHeader
+						}
+						}).then(function(res) {
+							item.status = res.status;
+							item.duration = Date.now() - startTime;
+							return res.json().then(json => {
+								item.response = json;
+								item.loading = false;
+								if (item.afterResponse)
+									return item.afterResponse(json);
+							});
+						}).catch(function (err) {
+							item.status = "ERR";
+							item.duration = Date.now() - startTime;
+							item.response = err.message;
+							item.loading = false;
+							console.log(err);
+						});
+
+				},
+
+				updateBrokerOptions: function (name) {
+					this.req("/api/~node/options", null).then(res => this.broker = res);
+				},
+
+
+				updateNodeList: function (name) {
+					this.req("/api/~node/list", null).then(res => {
+						res.sort((a,b) => a.id.localeCompare(b.id));
+						this.nodes = res;
+					});
+				},
+
+				updateServiceList: function (name) {
+					this.req("/api/~node/services?withActions=true", null)
+						.then(res => {
+							this.services = res;
+							res.sort((a,b) => a.name.localeCompare(b.name));
+							res.forEach(svc => svc.nodes.sort());
+						})
+						.then(() => this.req("/api/~node/actions", null))
+						.then(res => {
+							res.sort((a,b) => a.name.localeCompare(b.name));
+							const actions = res.reduce((a,b) => {
+								a[b.name] = b;
+								return a;
+							}, {});
+							this.actions = actions;
+							if(this.page==='apis'){
+								this.requests = {};
+								for (const service of this.services) {
+									this.requests[service.fullName] = [];
+									const version = service.version ? "v"+service.version+"/" : "";
+									for (const key in service.actions) {
+										const action = service.actions[key];
+										if(!action.rest) continue;
+										const req = {
+											expand:false,
+											loading:false,
+											id: action.name,
+											action: action.name,
+											rest: this.getRest(action),
+											fields: action.fields,
+											response: null,
+											status: null,
+											duration: null,
+											afterResponse: action.afterResponse
+										};
+										const baseUrl = service.settings.rest;
+										if(req.rest.method==='*'){
+											['GET','POST','PUT','PATCH','DELETE'].forEach(method => {
+												const req2 = Object.assign({}, req);
+												req2.id = req2.id+'.'+method.toLocaleLowerCase();
+												req2.rest = Object.assign({}, req.rest);
+												req2.rest.method = method;
+												const url = baseUrl ? `/api${baseUrl}${req2.rest.path}` : `/api/${version}${service.name}${req2.rest.path}`;
+												req2.rest.url = url;
+												req2.fields = this.getFields(action,req2.rest.method,req2.rest.url);
+												this.requests[service.fullName].push(req2);
+											});
+										} else {
+											let version = service.version ? "v"+service.version+"/" : "";
+											let url = baseUrl ? `/api${baseUrl}${req.rest.path}`: `/api/${version}${service.name}${req.rest.path}`;
+											req.rest.url = url;
+											req.fields = this.getFields(action,req.rest.method,req.rest.url);
+											this.requests[service.fullName].push(req);
+										}
+
+									}
+									if(this.requests[service.fullName].length===0) delete this.requests[service.fullName];
+								}
+							}
+						});
+				},
+
+				req: function (url, params) {
+					return fetch(url, { method: "GET", body: params ? JSON.stringify(params) : null })
+						.then(function(res) {
+							return res.json();
+						});
+				},
+
+				updatePageResources() {
+					if (this.page == 'nodes') return this.updateNodeList();
+					if (this.page == 'services') return this.updateServiceList();
+
+				}
+			},
+
+			mounted() {
+				var self = this;
+
+				const page = localStorage.getItem("lastPage");
+				this.page = page ? page : 'home';
+				if(this.page==='apis'){
+					this.refreshApiPage();
+				}
+				const globalAuth = localStorage.getItem("globalAuth");
+				this.globalAuth = globalAuth ? JSON.parse(globalAuth) : {};
+
+				setInterval(function () {
+					self.updatePageResources();
+				}, 2000);
+
+				this.updateBrokerOptions();
+			}
+
+		});
+		app.mount('#app');
+	</script>
+</body>
+</html>

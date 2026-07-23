@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: clickeeapi 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clickeeapi
+  template:
+    metadata:
+      labels:
+        app: clickeeapi 
+    spec:
+      containers:
+        - name: clickeeapi 
+          image: clickee.azurecr.io/clickeeapi
+          ports:
+          - containerPort: 80
